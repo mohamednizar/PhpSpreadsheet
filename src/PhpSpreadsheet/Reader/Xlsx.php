@@ -803,7 +803,108 @@ class Xlsx extends BaseReader
                             }
 
                             if ($xmlSheet && $xmlSheet->autoFilter && !$this->readDataOnly) {
+<<<<<<< HEAD
                                 (new AutoFilter($docSheet, $xmlSheet))->load();
+=======
+                                $autoFilterRange = (string) $xmlSheet->autoFilter['ref'];
+                                if (strpos($autoFilterRange, ':') !== false) {
+                                    $autoFilter = $docSheet->getAutoFilter();
+                                    $autoFilterRange = str_replace('$', '', $autoFilterRange);
+                                    $autoFilter->setRange($autoFilterRange);
+
+                                    foreach ($xmlSheet->autoFilter->filterColumn as $filterColumn) {
+                                        $column = $autoFilter->getColumnByOffset((int) $filterColumn['colId']);
+                                        //    Check for standard filters
+                                        if ($filterColumn->filters) {
+                                            $column->setFilterType(Column::AUTOFILTER_FILTERTYPE_FILTER);
+                                            $filters = $filterColumn->filters;
+                                            if ((isset($filters['blank'])) && ($filters['blank'] == 1)) {
+                                                //    Operator is undefined, but always treated as EQUAL
+                                                $column->createRule()->setRule(null, '')->setRuleType(Column\Rule::AUTOFILTER_RULETYPE_FILTER);
+                                            }
+                                            //    Standard filters are always an OR join, so no join rule needs to be set
+                                            //    Entries can be either filter elements
+                                            foreach ($filters->filter as $filterRule) {
+                                                //    Operator is undefined, but always treated as EQUAL
+                                                $column->createRule()->setRule(null, (string) $filterRule['val'])->setRuleType(Column\Rule::AUTOFILTER_RULETYPE_FILTER);
+                                            }
+                                            //    Or Date Group elements
+                                            foreach ($filters->dateGroupItem as $dateGroupItem) {
+                                                //    Operator is undefined, but always treated as EQUAL
+                                                $column->createRule()->setRule(
+                                                    null,
+                                                    [
+                                                        'year' => (string) $dateGroupItem['year'],
+                                                        'month' => (string) $dateGroupItem['month'],
+                                                        'day' => (string) $dateGroupItem['day'],
+                                                        'hour' => (string) $dateGroupItem['hour'],
+                                                        'minute' => (string) $dateGroupItem['minute'],
+                                                        'second' => (string) $dateGroupItem['second'],
+                                                    ],
+                                                    (string) $dateGroupItem['dateTimeGrouping']
+                                                )
+                                                ->setRuleType(Column\Rule::AUTOFILTER_RULETYPE_DATEGROUP);
+                                            }
+                                        }
+                                        //    Check for custom filters
+                                        if ($filterColumn->customFilters) {
+                                            $column->setFilterType(Column::AUTOFILTER_FILTERTYPE_CUSTOMFILTER);
+                                            $customFilters = $filterColumn->customFilters;
+                                            //    Custom filters can an AND or an OR join;
+                                            //        and there should only ever be one or two entries
+                                            if ((isset($customFilters['and'])) && ($customFilters['and'] == 1)) {
+                                                $column->setJoin(Column::AUTOFILTER_COLUMN_JOIN_AND);
+                                            }
+                                            foreach ($customFilters->customFilter as $filterRule) {
+                                                $column->createRule()->setRule(
+                                                    (string) $filterRule['operator'],
+                                                    (string) $filterRule['val']
+                                                )
+                                                ->setRuleType(Column\Rule::AUTOFILTER_RULETYPE_CUSTOMFILTER);
+                                            }
+                                        }
+                                        //    Check for dynamic filters
+                                        if ($filterColumn->dynamicFilter) {
+                                            $column->setFilterType(Column::AUTOFILTER_FILTERTYPE_DYNAMICFILTER);
+                                            //    We should only ever have one dynamic filter
+                                            foreach ($filterColumn->dynamicFilter as $filterRule) {
+                                                //    Operator is undefined, but always treated as EQUAL
+                                                $column->createRule()->setRule(
+                                                    null,
+                                                    (string) $filterRule['val'],
+                                                    (string) $filterRule['type']
+                                                )
+                                                ->setRuleType(Column\Rule::AUTOFILTER_RULETYPE_DYNAMICFILTER);
+                                                if (isset($filterRule['val'])) {
+                                                    $column->setAttribute('val', (string) $filterRule['val']);
+                                                }
+                                                if (isset($filterRule['maxVal'])) {
+                                                    $column->setAttribute('maxVal', (string) $filterRule['maxVal']);
+                                                }
+                                            }
+                                        }
+                                        //    Check for dynamic filters
+                                        if ($filterColumn->top10) {
+                                            $column->setFilterType(Column::AUTOFILTER_FILTERTYPE_TOPTENFILTER);
+                                            //    We should only ever have one top10 filter
+                                            foreach ($filterColumn->top10 as $filterRule) {
+                                                $column->createRule()->setRule(
+                                                    (((isset($filterRule['percent'])) && ($filterRule['percent'] == 1))
+                                                        ? Column\Rule::AUTOFILTER_COLUMN_RULE_TOPTEN_PERCENT
+                                                        : Column\Rule::AUTOFILTER_COLUMN_RULE_TOPTEN_BY_VALUE
+                                                    ),
+                                                    (string) $filterRule['val'],
+                                                    (((isset($filterRule['top'])) && ($filterRule['top'] == 1))
+                                                        ? Column\Rule::AUTOFILTER_COLUMN_RULE_TOPTEN_TOP
+                                                        : Column\Rule::AUTOFILTER_COLUMN_RULE_TOPTEN_BOTTOM
+                                                    )
+                                                )
+                                                ->setRuleType(Column\Rule::AUTOFILTER_RULETYPE_TOPTENFILTER);
+                                            }
+                                        }
+                                    }
+                                }
+>>>>>>> 2836fdc32d82939aecd372da838fdf9c1f3fbca0
                             }
 
                             if ($xmlSheet && $xmlSheet->mergeCells && $xmlSheet->mergeCells->mergeCell && !$this->readDataOnly) {

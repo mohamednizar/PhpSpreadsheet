@@ -162,11 +162,10 @@ and this project adheres to [Semantic Versioning](https://semver.org).
 
 ### Fixed
 
-- Sheet title can contain exclamation mark [#325](https://github.com/PHPOffice/PhpSpreadsheet/issues/325)
-- Xls file cause the exception during open by Xls reader [#402](https://github.com/PHPOffice/PhpSpreadsheet/issues/402)
-- Skip non numeric value in SUMIF [#618](https://github.com/PHPOffice/PhpSpreadsheet/pull/618)
-- OFFSET should allow omitted height and width [#561](https://github.com/PHPOffice/PhpSpreadsheet/issues/561)
-- Correctly determine delimiter when CSV contains line breaks inside enclosures [#716](https://github.com/PHPOffice/PhpSpreadsheet/issues/716)
+- Sheet title can contain exclamation mark - [#325](https://github.com/PHPOffice/PhpSpreadsheet/issues/325)
+- Xls file cause the exception during open by Xls reader - [#402](https://github.com/PHPOffice/PhpSpreadsheet/issues/402)
+- Skip non numeric value in SUMIF - [#618](https://github.com/PHPOffice/PhpSpreadsheet/pull/618)
+- Fix for undefined index $ and test cases for columnIndexFromString - [#687](https://github.com/PHPOffice/PhpSpreadsheet/issues/687)
 
 ## [1.4.1] - 2018-09-30
 
