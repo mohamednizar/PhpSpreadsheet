@@ -1385,13 +1385,18 @@ class Xlsx extends BaseReader
                                         $this->securityScanner->scan($this->getFromZipArchive($zip, $fileDrawing)),
                                         'SimpleXMLElement',
                                         Settings::getLibXmlLoaderOptions()
-                                    )->children('http://schemas.openxmlformats.org/markup-compatibility/2006');
+                                    );
 
-                                    if ($xmlAltDrawing->AlternateContent) {
-                                        foreach ($xmlAltDrawing->AlternateContent as $alternateContent) {
-                                            $unparsedLoadedData['sheets'][$docSheet->getCodeName()]['drawingAlternateContents'][] = $alternateContent->asXML();
+                                    if(is_object($xmlAltDrawing)){
+                                        $xmlAltDrawing->children('http://schemas.openxmlformats.org/markup-compatibility/2006');
+                                        if ($xmlAltDrawing->AlternateContent) {
+                                            foreach ($xmlAltDrawing->AlternateContent as $alternateContent) {
+                                                $unparsedLoadedData['sheets'][$docSheet->getCodeName()]['drawingAlternateContents'][] = $alternateContent->asXML();
+                                            }
                                         }
                                     }
+
+                                    
                                 }
                             }
 
