@@ -803,9 +803,7 @@ class Xlsx extends BaseReader
                             }
 
                             if ($xmlSheet && $xmlSheet->autoFilter && !$this->readDataOnly) {
-<<<<<<< HEAD
                                 (new AutoFilter($docSheet, $xmlSheet))->load();
-=======
                                 $autoFilterRange = (string) $xmlSheet->autoFilter['ref'];
                                 if (strpos($autoFilterRange, ':') !== false) {
                                     $autoFilter = $docSheet->getAutoFilter();
@@ -904,7 +902,6 @@ class Xlsx extends BaseReader
                                         }
                                     }
                                 }
->>>>>>> 2836fdc32d82939aecd372da838fdf9c1f3fbca0
                             }
 
                             if ($xmlSheet && $xmlSheet->mergeCells && $xmlSheet->mergeCells->mergeCell && !$this->readDataOnly) {
